@@ -95,8 +95,12 @@ export default function ListingDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           <div className="relative h-80 sm:h-96 w-full rounded-4xl overflow-hidden border border-freshBorder shadow-card">
             <img
-              src={listing.image_url || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=1200&q=80"}
+              src={listing.image_url || "/images/food/dal_makhani.jpg"}
               alt={listing.title}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/images/food/dal_makhani.jpg";
+              }}
               className="w-full h-full object-cover"
             />
             <div className="absolute top-4 left-4 flex gap-2">

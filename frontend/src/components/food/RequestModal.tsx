@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FoodListing } from "@/types";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
-import { Truck, UserCheck, AlertCircle } from "lucide-react";
+import { Truck, Check, AlertCircle, Sparkles } from "lucide-react";
 
 interface RequestModalProps {
   listing: FoodListing | null;
@@ -22,11 +22,17 @@ export function RequestModal({
   onSuccess,
 }: RequestModalProps) {
   const router = useRouter();
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(listing?.remaining_quantity || 10);
   const [deliveryMode, setDeliveryMode] = useState<"self_pickup" | "volunteer_courier" | "provider_delivery">("self_pickup");
   const [notes, setNotes] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (listing) {
+      setQuantity(listing.remaining_quantity);
+    }
+  }, [listing]);
 
   if (!listing) return null;
 
@@ -70,12 +76,14 @@ export function RequestModal({
     }
   };
 
+  const halfQuantity = Math.max(1, Math.round(listing.remaining_quantity / 2));
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Request Surplus Food"
-      description={`Request donation from ${listing.provider_name || "Food Provider"}`}
+      title="Request & Claim Surplus Food"
+      description={`1-Click surplus food claim from ${listing.provider_name || "Food Provider"}`}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Listing preview banner */}
@@ -83,13 +91,25 @@ export function RequestModal({
           <img
             src={listing.image_url || "/images/food/dal_makhani.jpg"}
             alt={listing.title}
-            className="w-14 h-14 rounded-xl object-cover shrink-0"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "/images/food/dal_makhani.jpg";
+            }}
+            className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-xs"
           />
           <div>
             <h4 className="text-sm font-bold text-freshText-primary line-clamp-1">{listing.title}</h4>
             <p className="text-xs text-freshText-secondary">
-              Available: <strong className="text-freshSuccess font-bold">{listing.remaining_quantity} {listing.unit}</strong>
+              Available: <strong className="text-emerald-700 font-extrabold">{listing.remaining_quantity} {listing.unit}</strong> • {listing.pickup_address}
             </p>
+            <div className="mt-1 flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                {listing.category.replace("_", " ")}
+              </span>
+              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                {listing.dietary_type}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -100,12 +120,18 @@ export function RequestModal({
           </div>
         )}
 
-        {/* Quantity Input */}
+        {/* Quantity Input & 1-Click Quick Select */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-freshText-secondary mb-1.5">
-            Quantity Needed ({listing.unit})
-          </label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-freshText-secondary">
+              Quantity Needed ({listing.unit})
+            </label>
+            <span className="text-[11px] font-medium text-emerald-700">
+              Quick portions:
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 mb-2">
             <input
               type="number"
               step="any"
@@ -115,16 +141,62 @@ export function RequestModal({
               onChange={(e) => setQuantity(parseFloat(e.target.value) || 0)}
               required
               placeholder={`Max ${listing.remaining_quantity}`}
-              className="flex-1 px-4 py-2.5 bg-freshBg border border-freshBorder rounded-2xl text-sm font-semibold text-freshText-primary focus:outline-none focus:ring-2 focus:ring-lime-400 focus:bg-white"
+              className="flex-1 px-4 py-2.5 bg-freshBg border border-freshBorder rounded-2xl text-sm font-bold text-freshText-primary focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
             />
-            <Button
+          </div>
+
+          {/* 1-Click Quick Portion Buttons */}
+          <div className="flex flex-wrap gap-1.5">
+            <button
               type="button"
-              variant="outline"
-              size="sm"
               onClick={() => setQuantity(listing.remaining_quantity)}
+              className={`px-3 py-1 rounded-xl text-xs font-bold border transition-colors ${
+                quantity === listing.remaining_quantity
+                  ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                  : "bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50"
+              }`}
             >
-              Request All
-            </Button>
+              All ({listing.remaining_quantity} {listing.unit})
+            </button>
+            {listing.remaining_quantity > 2 && (
+              <button
+                type="button"
+                onClick={() => setQuantity(halfQuantity)}
+                className={`px-3 py-1 rounded-xl text-xs font-bold border transition-colors ${
+                  quantity === halfQuantity
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-white text-freshText-secondary border-freshBorder hover:bg-freshBg"
+                }`}
+              >
+                Half ({halfQuantity} {listing.unit})
+              </button>
+            )}
+            {listing.remaining_quantity >= 10 && (
+              <button
+                type="button"
+                onClick={() => setQuantity(10)}
+                className={`px-3 py-1 rounded-xl text-xs font-bold border transition-colors ${
+                  quantity === 10
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-white text-freshText-secondary border-freshBorder hover:bg-freshBg"
+                }`}
+              >
+                10 {listing.unit}
+              </button>
+            )}
+            {listing.remaining_quantity >= 5 && (
+              <button
+                type="button"
+                onClick={() => setQuantity(5)}
+                className={`px-3 py-1 rounded-xl text-xs font-bold border transition-colors ${
+                  quantity === 5
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-white text-freshText-secondary border-freshBorder hover:bg-freshBg"
+                }`}
+              >
+                5 {listing.unit}
+              </button>
+            )}
           </div>
         </div>
 
@@ -139,15 +211,15 @@ export function RequestModal({
               onClick={() => setDeliveryMode("self_pickup")}
               className={`p-3 rounded-2xl border text-left transition-all ${
                 deliveryMode === "self_pickup"
-                  ? "bg-lime/20 border-lime-500 font-semibold text-freshText-primary"
+                  ? "bg-emerald-50 border-emerald-500 font-semibold text-emerald-950 ring-1 ring-emerald-500"
                   : "bg-white border-freshBorder text-freshText-secondary hover:bg-freshBg"
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Truck className="w-4 h-4 text-freshText-primary" />
+                <Truck className="w-4 h-4 text-emerald-700" />
                 <span className="text-xs font-bold">Self Pickup</span>
               </div>
-              <p className="text-[11px] text-freshText-secondary">Our NGO vehicle collects</p>
+              <p className="text-[11px] text-freshText-secondary">Our vehicle collects at venue</p>
             </button>
 
             <button
@@ -155,36 +227,36 @@ export function RequestModal({
               onClick={() => setDeliveryMode("volunteer_courier")}
               className={`p-3 rounded-2xl border text-left transition-all ${
                 deliveryMode === "volunteer_courier"
-                  ? "bg-lime/20 border-lime-500 font-semibold text-freshText-primary"
+                  ? "bg-emerald-50 border-emerald-500 font-semibold text-emerald-950 ring-1 ring-emerald-500"
                   : "bg-white border-freshBorder text-freshText-secondary hover:bg-freshBg"
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <UserCheck className="w-4 h-4 text-freshText-primary" />
+                <Sparkles className="w-4 h-4 text-emerald-700" />
                 <span className="text-xs font-bold">Volunteer Courier</span>
               </div>
-              <p className="text-[11px] text-freshText-secondary">Assign verified volunteer</p>
+              <p className="text-[11px] text-freshText-secondary">FoodLoop volunteer delivers</p>
             </button>
           </div>
         </div>
 
-        {/* Distribution Notes */}
+        {/* Notes */}
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-freshText-secondary mb-1.5">
-            Distribution Notes & Community Beneficiaries
+            Pickup Notes / Distribution Target (Optional)
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-            placeholder="e.g. Evening distribution for 50 residents at local community shelter."
-            className="w-full px-4 py-2.5 bg-freshBg border border-freshBorder rounded-2xl text-xs text-freshText-primary focus:outline-none focus:ring-2 focus:ring-lime-400 focus:bg-white resize-none"
+            rows={2}
+            placeholder="e.g. Feeding 60 people at South Delhi shelter or animals at local Gaushala..."
+            className="w-full px-4 py-2.5 bg-freshBg border border-freshBorder rounded-2xl text-xs font-medium text-freshText-primary focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white resize-none"
           />
         </div>
 
-        {/* Submit Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t border-freshBorder">
-          <Button type="button" variant="ghost" size="md" onClick={onClose} className="flex-1">
+        {/* Submit Button */}
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button
@@ -192,9 +264,10 @@ export function RequestModal({
             variant="primary"
             size="md"
             isLoading={isSubmitting}
-            className="flex-1 font-semibold"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-full px-6 shadow-md"
+            leftIcon={<Check className="w-4 h-4" />}
           >
-            Confirm Request
+            Confirm & Claim {quantity} {listing.unit}
           </Button>
         </div>
       </form>

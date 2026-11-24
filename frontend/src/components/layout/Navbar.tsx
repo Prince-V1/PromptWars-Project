@@ -1,24 +1,103 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   Menu, X, PlusCircle, Compass, 
   BarChart3, ShieldCheck, ChevronDown, LogOut,
-  MapPin, Store, CalendarCheck, Sparkles, Truck, User
+  MapPin, Store, CalendarCheck, Truck, User,
+  Bell, CheckCheck, ShoppingBag
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "@/hooks/useLocation";
 import { Button } from "@/components/ui/Button";
-import { UserRole } from "@/types";
+
+interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+  type: "order" | "feed" | "receipt" | "delivery";
+  link?: string;
+}
+
+const INITIAL_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: "notif-1",
+    title: "New Claim Request",
+    message: "Robin Hood Army requested 20 kg Subz Dum Biryani (Hauz Khas Hub)",
+    time: "2m ago",
+    read: false,
+    type: "order",
+    link: "/orders/req-hk-01",
+  },
+  {
+    id: "notif-2",
+    title: "Animal Feed Reserved",
+    message: "Stray Relief Shelter reserved 45 kg Whole Wheat Roti Mash",
+    time: "15m ago",
+    read: false,
+    type: "feed",
+    link: "/orders/req-hk-02",
+  },
+  {
+    id: "notif-3",
+    title: "Handover Receipt Ready",
+    message: "Verified FSSAI Handover Manifest #FL-HK-01 generated",
+    time: "1h ago",
+    read: false,
+    type: "receipt",
+    link: "/orders/req-hk-03/receipt",
+  },
+  {
+    id: "notif-4",
+    title: "Order Delivered",
+    message: "Shahi Paneer safely delivered to Asha Sadan Delhi",
+    time: "2h ago",
+    read: true,
+    type: "delivery",
+    link: "/orders",
+  },
+];
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user, logout, switchDemoRole } = useAuth();
+  const { user, logout } = useAuth();
   const { currentLocation, openModal: openLocationModal } = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
+
+  // Load persisted notifications
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("foodloop_notifications");
+      if (saved) {
+        setNotifications(JSON.parse(saved));
+      }
+    } catch {}
+  }, []);
+
+  const saveNotifications = (items: NotificationItem[]) => {
+    setNotifications(items);
+    try {
+      localStorage.setItem("foodloop_notifications", JSON.stringify(items));
+    } catch {}
+  };
+
+  const markAllAsRead = () => {
+    const updated = notifications.map((n) => ({ ...n, read: true }));
+    saveNotifications(updated);
+  };
+
+  const markAsRead = (id: string) => {
+    const updated = notifications.map((n) => (n.id === id ? { ...n, read: true } : n));
+    saveNotifications(updated);
+  };
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const getDashboardLink = () => {
     if (!user) return "/login";
@@ -31,13 +110,6 @@ export function Navbar() {
     }
   };
 
-  const rolesList: { role: UserRole; label: string; badge: string }[] = [
-    { role: "food_provider", label: "Taj Hotel (Provider)", badge: "Provider" },
-    { role: "recipient", label: "Robin Hood Army (NGO)", badge: "Recipient" },
-    { role: "volunteer", label: "Arjun Verma (Volunteer)", badge: "Volunteer" },
-    { role: "admin", label: "Dr. Sunita (Admin)", badge: "Admin" },
-  ];
-
   return (
     <header className="sticky top-0 z-40 bg-freshBg/80 backdrop-blur-md border-b border-freshBorder">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,6 +119,10 @@ export function Navbar() {
             <img
               src="/images/logo.png"
               alt="FoodLoop Logo"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/images/food/dal_makhani.jpg";
+              }}
               className="w-12 h-12 object-contain rounded-2xl shadow-xs group-hover:scale-105 transition-transform"
             />
             <div>
@@ -91,6 +167,19 @@ export function Navbar() {
               <Compass className="w-3.5 h-3.5 text-emerald-600" />
               <span>Explore Food</span>
             </Link>
+
+            <Link
+              href="/my-shop"
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
+                pathname.startsWith("/my-shop")
+                  ? "bg-emerald-600 text-white font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-emerald-700"
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-emerald-600 group-hover:text-emerald-700" />
+              <span>My E-Shop</span>
+            </Link>
+
             <Link
               href="/events"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
@@ -103,6 +192,7 @@ export function Navbar() {
               <span>Event Rescue</span>
               <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-rose-600 text-white">Weddings</span>
             </Link>
+
             <Link
               href="/recipients"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
@@ -115,6 +205,7 @@ export function Navbar() {
               <span>Animal Care & Feed</span>
               <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-indigo-600 text-white">Gaushalas</span>
             </Link>
+
             <Link
               href="/donors"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
@@ -126,6 +217,7 @@ export function Navbar() {
               <Store className="w-3.5 h-3.5 text-amber-600" />
               <span>Donor Directory</span>
             </Link>
+
             <Link
               href="/orders"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
@@ -137,6 +229,7 @@ export function Navbar() {
               <Truck className="w-3.5 h-3.5 text-teal-600" />
               <span>Track Orders</span>
             </Link>
+
             <Link
               href="/impact"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
@@ -148,6 +241,7 @@ export function Navbar() {
               <BarChart3 className="w-3.5 h-3.5 text-freshSuccess" />
               <span>Impact</span>
             </Link>
+
             {user && (
               <Link
                 href={getDashboardLink()}
@@ -165,38 +259,85 @@ export function Navbar() {
 
           {/* Right Action buttons */}
           <div className="hidden md:flex items-center gap-2.5">
-            {/* Quick Role Switcher for Hackathon Judges */}
+            {/* Live Notification Bell Icon */}
             <div className="relative">
               <button
-                onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg text-freshText-secondary shadow-xs"
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                className="relative p-2.5 rounded-full border border-freshBorder bg-white hover:bg-emerald-50 transition-all text-freshText-primary shadow-xs"
+                title="Notifications & Order Updates"
+                aria-label="View notifications"
               >
-                <span>Role: <strong className="text-freshText-primary capitalize">{user?.role?.replace("_", " ") || "Guest"}</strong></span>
-                <ChevronDown className="w-3.5 h-3.5 text-freshText-secondary" />
+                <Bell className="w-4 h-4 text-emerald-800" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black rounded-full w-4 h-4 flex items-center justify-center shadow-xs animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
               </button>
 
-              {roleDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-freshBorder shadow-floating p-2 z-50 animate-fade-in">
-                  <div className="px-3 py-1.5 border-b border-freshBorder mb-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-freshText-secondary">Demo Fast Role Switcher</p>
-                  </div>
-                  {rolesList.map((item) => (
-                    <button
-                      key={item.role}
-                      onClick={() => {
-                        switchDemoRole(item.role);
-                        setRoleDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
-                        user?.role === item.role ? "bg-emerald-50 text-emerald-800 font-bold" : "hover:bg-freshBg text-freshText-primary"
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                      <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-sage-100 text-freshText-secondary">
-                        {item.badge}
+              {notificationsOpen && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-3xl border border-freshBorder shadow-floating p-3 z-50 animate-fade-in">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-freshBorder px-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black uppercase tracking-wider text-freshText-primary">
+                        Live Updates
                       </span>
-                    </button>
-                  ))}
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] font-extrabold bg-red-100 text-red-700 px-2 py-0.2 rounded-full">
+                          {unreadCount} new
+                        </span>
+                      )}
+                    </div>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllAsRead}
+                        className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+                      >
+                        <CheckCheck className="w-3 h-3" />
+                        <span>Mark read</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+                    {notifications.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={item.link || "/orders"}
+                        onClick={() => {
+                          markAsRead(item.id);
+                          setNotificationsOpen(false);
+                        }}
+                        className={`block p-2.5 rounded-2xl transition-all border ${
+                          item.read
+                            ? "bg-freshBg/50 border-freshBorder text-freshText-secondary"
+                            : "bg-emerald-50/70 border-emerald-200 text-freshText-primary font-medium"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            {item.type === "feed" && <span>🐾</span>}
+                            {item.type === "order" && <span>📦</span>}
+                            {item.type === "receipt" && <span>📄</span>}
+                            {item.type === "delivery" && <span>✅</span>}
+                            <span className="text-xs font-bold text-freshText-primary">{item.title}</span>
+                          </div>
+                          <span className="text-[10px] text-freshText-secondary shrink-0">{item.time}</span>
+                        </div>
+                        <p className="text-xs text-freshText-secondary mt-1 leading-snug">{item.message}</p>
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 mt-2 border-t border-freshBorder">
+                    <Link
+                      href="/orders"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="block text-center text-xs font-bold text-emerald-700 hover:text-emerald-800 py-1"
+                    >
+                      View All Orders & Deliveries →
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -204,7 +345,7 @@ export function Navbar() {
             {/* Profile Button */}
             <Link href="/profile">
               <button
-                className={`p-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg transition-all text-freshText-primary shadow-xs ${
+                className={`p-2.5 rounded-full border border-freshBorder bg-white hover:bg-freshBg transition-all text-freshText-primary shadow-xs ${
                   pathname === "/profile" ? "ring-2 ring-emerald-500 bg-emerald-50" : ""
                 }`}
                 title="Edit User & Organization Profile"
@@ -218,17 +359,17 @@ export function Navbar() {
               <Button 
                 variant="primary" 
                 size="sm" 
-                className="text-xs font-extrabold shadow-md bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-4" 
+                className="text-xs font-extrabold shadow-md bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-4.5 py-2.5 flex items-center gap-1.5" 
                 leftIcon={<PlusCircle className="w-3.5 h-3.5" />}
               >
-                Donate Food
+                + Donate Food
               </Button>
             </Link>
 
             {user && (
               <button
                 onClick={logout}
-                className="p-2 rounded-full border border-freshBorder bg-white hover:bg-red-50 text-freshText-secondary hover:text-freshError transition-colors"
+                className="p-2.5 rounded-full border border-freshBorder bg-white hover:bg-red-50 text-freshText-secondary hover:text-freshError transition-colors"
                 title="Sign Out"
               >
                 <LogOut className="w-4 h-4" />
@@ -238,6 +379,19 @@ export function Navbar() {
 
           {/* Mobile hamburger menu toggle */}
           <div className="flex md:hidden items-center gap-2">
+            {/* Mobile notification toggle */}
+            <button
+              onClick={() => setNotificationsOpen(!notificationsOpen)}
+              className="relative p-2 rounded-xl border border-freshBorder bg-white text-emerald-800"
+            >
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[9px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-2xl border border-freshBorder bg-white text-freshText-primary"
@@ -265,6 +419,20 @@ export function Navbar() {
               <Compass className="w-4 h-4 text-emerald-600" />
               <span>Explore Food</span>
             </Link>
+
+            <Link
+              href="/my-shop"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                pathname.startsWith("/my-shop")
+                  ? "bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4 text-emerald-600" />
+              <span>My E-Shop (Donor Storefront)</span>
+            </Link>
+
             <Link
               href="/events"
               onClick={() => setMobileMenuOpen(false)}
@@ -280,6 +448,7 @@ export function Navbar() {
               </div>
               <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-rose-600 text-white">Weddings</span>
             </Link>
+
             <Link
               href="/recipients"
               onClick={() => setMobileMenuOpen(false)}
@@ -295,6 +464,7 @@ export function Navbar() {
               </div>
               <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white">Gaushalas</span>
             </Link>
+
             <Link
               href="/donors"
               onClick={() => setMobileMenuOpen(false)}
@@ -307,6 +477,7 @@ export function Navbar() {
               <Store className="w-4 h-4 text-amber-600" />
               <span>Donor Directory</span>
             </Link>
+
             <Link
               href="/orders"
               onClick={() => setMobileMenuOpen(false)}
@@ -319,6 +490,7 @@ export function Navbar() {
               <Truck className="w-4 h-4 text-teal-600" />
               <span>Track Orders & Receipts</span>
             </Link>
+
             <Link
               href="/impact"
               onClick={() => setMobileMenuOpen(false)}
@@ -331,6 +503,7 @@ export function Navbar() {
               <BarChart3 className="w-4 h-4 text-freshSuccess" />
               <span>Impact Metrics</span>
             </Link>
+
             <Link
               href="/profile"
               onClick={() => setMobileMenuOpen(false)}
@@ -343,6 +516,7 @@ export function Navbar() {
               <User className="w-4 h-4 text-emerald-700" />
               <span>User & Org Profile</span>
             </Link>
+
             {user && (
               <Link
                 href={getDashboardLink()}
@@ -365,29 +539,8 @@ export function Navbar() {
                 className="w-full px-4 py-2.5 text-xs font-extrabold rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm"
               >
                 <PlusCircle className="w-4 h-4 text-white" />
-                <span>+ Donate Food Batch</span>
+                <span>+ Donate Food</span>
               </Link>
-            </div>
-          </div>
-
-          {/* Mobile Role Switcher */}
-          <div className="pt-2 border-t border-freshBorder">
-            <p className="text-[10px] uppercase font-bold tracking-wider text-freshText-secondary mb-2">Fast Switch Demo Role:</p>
-            <div className="grid grid-cols-2 gap-1.5">
-              {rolesList.map((item) => (
-                <button
-                  key={item.role}
-                  onClick={() => {
-                    switchDemoRole(item.role);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-medium text-left border ${
-                    user?.role === item.role ? "border-lime bg-lime/20 font-bold" : "border-freshBorder bg-freshBg"
-                  }`}
-                >
-                  {item.badge}
-                </button>
-              ))}
             </div>
           </div>
 

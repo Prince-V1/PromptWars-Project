@@ -290,6 +290,10 @@ export default function RecipientsDirectoryPage() {
                     <img
                       src={org.image_url || defaultImage}
                       alt={`${org.name} - ${org.organization_type}`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = isAnimal ? "/images/animal_care/gaushala.jpg" : "/images/food/dal_makhani.jpg";
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-3 left-3 flex items-center gap-1.5">

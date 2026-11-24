@@ -46,9 +46,9 @@ export default function DiscoverPage() {
         status: statusFilter || undefined,
         search: search.trim() || undefined,
         sort_by: sortBy || undefined,
-        // Dynamic coordinates from selected location hub or GPS
-        latitude: currentLocation?.latitude ?? 28.6328,
-        longitude: currentLocation?.longitude ?? 77.2197,
+        // Dynamic coordinates from selected location hub or GPS (Defaults to Hauz Khas, South Delhi)
+        latitude: currentLocation?.latitude ?? 28.5494,
+        longitude: currentLocation?.longitude ?? 77.2001,
         max_distance_km: maxDistance || undefined,
       });
       setListings(data);

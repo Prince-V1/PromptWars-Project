@@ -98,6 +98,10 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
           <img
             src={listing.image_url || "/images/food/dal_makhani.jpg"}
             alt={listing.title}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "/images/food/dal_makhani.jpg";
+            }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           {/* Subtle cinematic gradient for high-contrast badge readability */}

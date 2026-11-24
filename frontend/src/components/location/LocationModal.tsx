@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { useLocation, POPULAR_LOCATIONS } from "@/hooks/useLocation";
-import { MapPin, Navigation, Check, Search, AlertCircle, Compass } from "lucide-react";
+import { MapPin, Navigation, Check, Search, Compass } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export function LocationModal() {
@@ -62,9 +62,9 @@ export function LocationModal() {
         </button>
 
         {gpsError && (
-          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-freshError flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{gpsError}</span>
+          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="font-medium">{gpsError}</span>
           </div>
         )}
 

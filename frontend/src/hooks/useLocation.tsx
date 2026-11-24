@@ -13,6 +13,14 @@ export interface LocationItem {
 
 export const POPULAR_LOCATIONS: LocationItem[] = [
   {
+    id: "hauz_khas",
+    name: "Hauz Khas & Green Park, South Delhi",
+    shortName: "Hauz Khas",
+    area: "South Delhi",
+    latitude: 28.5494,
+    longitude: 77.2001,
+  },
+  {
     id: "cp",
     name: "Connaught Place, Central Delhi",
     shortName: "Connaught Place",
@@ -35,14 +43,6 @@ export const POPULAR_LOCATIONS: LocationItem[] = [
     area: "Central-South Delhi",
     latitude: 28.5998,
     longitude: 77.2270,
-  },
-  {
-    id: "hauz_khas",
-    name: "Hauz Khas & Green Park",
-    shortName: "Hauz Khas",
-    area: "South Delhi",
-    latitude: 28.5494,
-    longitude: 77.2001,
   },
   {
     id: "paharganj",
@@ -126,33 +126,61 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   };
 
   const detectGPSLocation = async () => {
-    if (!navigator.geolocation) {
-      setGpsError("Geolocation is not supported by your browser.");
-      return;
-    }
-
     setIsDetectingGPS(true);
     setGpsError(null);
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setIsDetectingGPS(false);
-        const newLoc: LocationItem = {
-          id: "gps",
-          name: "My Live GPS Location",
-          shortName: "Live GPS",
-          area: "Detected Location",
-          latitude: parseFloat(pos.coords.latitude.toFixed(4)),
-          longitude: parseFloat(pos.coords.longitude.toFixed(4)),
-        };
-        handleSetLocation(newLoc);
-      },
-      (err) => {
-        setIsDetectingGPS(false);
-        setGpsError(`Unable to retrieve GPS: ${err.message}. Using default location.`);
-      },
-      { timeout: 10000, enableHighAccuracy: true }
-    );
+    if (typeof navigator !== "undefined" && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setIsDetectingGPS(false);
+          const newLoc: LocationItem = {
+            id: "gps",
+            name: "My Live Location (GPS)",
+            shortName: "My Location",
+            area: "Detected Location",
+            latitude: parseFloat(pos.coords.latitude.toFixed(4)),
+            longitude: parseFloat(pos.coords.longitude.toFixed(4)),
+          };
+          handleSetLocation(newLoc);
+        },
+        async () => {
+          // If browser GPS times out or lacks hardware, gracefully detect via CORS-friendly IP geolocation
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const res = await fetch("https://ipwho.is/", { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.latitude && data.longitude && data.success !== false) {
+                const ipLoc: LocationItem = {
+                  id: "ip_location",
+                  name: `${data.city || "Delhi"}, ${data.region || "NCR"}`,
+                  shortName: data.city || "Hauz Khas Hub",
+                  area: data.region || "Delhi NCR",
+                  latitude: parseFloat(Number(data.latitude).toFixed(4)),
+                  longitude: parseFloat(Number(data.longitude).toFixed(4)),
+                };
+                setIsDetectingGPS(false);
+                handleSetLocation(ipLoc);
+                return;
+              }
+            }
+          } catch {
+            // Ignore IP fetch failure
+          }
+
+          setIsDetectingGPS(false);
+          // Seamlessly default to Hauz Khas without jarring error
+          handleSetLocation(POPULAR_LOCATIONS[0]);
+          setGpsError("Set to Hauz Khas, South Delhi Hub.");
+        },
+        { timeout: 4500, enableHighAccuracy: false, maximumAge: 300000 }
+      );
+    } else {
+      setIsDetectingGPS(false);
+      handleSetLocation(POPULAR_LOCATIONS[0]);
+    }
   };
 
   return (
