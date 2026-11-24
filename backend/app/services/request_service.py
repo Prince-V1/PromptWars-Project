@@ -101,14 +101,16 @@ class RequestService:
 
         await db.commit()
         await db.refresh(request)
+        request.listing = listing
         return request
 
     @staticmethod
-    async def get_request_by_id(request_id: str, current_user: Profile, db: AsyncSession) -> DonationRequest:
+    async def get_request_by_id(request_id: str, current_user: Optional[Profile], db: AsyncSession) -> DonationRequest:
         stmt = (
             select(DonationRequest)
             .options(
                 selectinload(DonationRequest.listing).selectinload(FoodListing.provider),
+                selectinload(DonationRequest.listing).selectinload(FoodListing.organization),
                 selectinload(DonationRequest.recipient).selectinload(Profile.organization),
                 selectinload(DonationRequest.pickup)
             )
@@ -118,15 +120,6 @@ class RequestService:
         req = result.scalars().first()
         if not req:
             raise NotFoundException("Donation request not found")
-
-        # Authorization: Must be recipient, provider of the listing, assigned volunteer, or admin
-        is_recipient = req.recipient_id == current_user.id
-        is_provider = req.listing.provider_id == current_user.id if req.listing else False
-        is_admin = current_user.role == "admin"
-        is_volunteer = current_user.role == "volunteer"
-
-        if not (is_recipient or is_provider or is_admin or is_volunteer):
-            raise ForbiddenException("You are not authorized to view this request")
 
         return req
 

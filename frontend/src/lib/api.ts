@@ -65,6 +65,17 @@ class ApiClient {
     return this.request<UserProfile>("/auth/me");
   }
 
+  async getProfile(): Promise<UserProfile> {
+    return this.request<UserProfile>("/auth/profile");
+  }
+
+  async updateProfile(payload: any): Promise<UserProfile> {
+    return this.request<UserProfile>("/auth/profile", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
   // --- Food Listings ---
   async getFoodListings(params: Record<string, any> = {}): Promise<FoodListing[]> {
     const query = new URLSearchParams();
@@ -108,6 +119,10 @@ class ApiClient {
 
   async getRequests(): Promise<DonationRequest[]> {
     return this.request<DonationRequest[]>("/requests");
+  }
+
+  async getRequestById(id: string): Promise<DonationRequest> {
+    return this.request<DonationRequest>(`/requests/${id}`);
   }
 
   async acceptRequest(id: string): Promise<DonationRequest> {

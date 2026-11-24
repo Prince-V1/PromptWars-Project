@@ -84,3 +84,14 @@ class ProfileUpdateRequest(BaseModel):
     full_name: Optional[str] = None
     phone_number: Optional[str] = None
     avatar_url: Optional[str] = None
+    organization_name: Optional[str] = None
+    organization_type: Optional[str] = None
+    description: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    postal_code: Optional[str] = None
+    capacity_servings_per_day: Optional[int] = None
+    supported_species: Optional[List[str]] = None
+    recipient_category: Optional[str] = None
+    registration_number: Optional[str] = None

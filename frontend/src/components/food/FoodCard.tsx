@@ -42,6 +42,21 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
     return `${hours}h ${mins}m left`;
   };
 
+  // Live Relative Upload Time Badge ("Just now", "3m ago", "1h ago")
+  const getLiveUploadTime = (createdAtStr?: string) => {
+    if (!createdAtStr) return "Just now";
+    const created = new Date(createdAtStr);
+    const now = new Date();
+    const diffSec = Math.floor((now.getTime() - created.getTime()) / 1000);
+    if (diffSec < 60) return "Just now";
+    const diffMins = Math.floor(diffSec / 60);
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
+  };
+
   const remainingTimeStr = getRemainingTime(listing.pickup_deadline);
   const isHighUrgency = listing.priority_score >= 65;
 
@@ -62,16 +77,16 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
         {/* ======================================================== */}
         <div className="relative aspect-[16/10] w-full bg-sage-100 overflow-hidden">
           <img
-            src={listing.image_url || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80"}
+            src={listing.image_url || "/images/food/dal_makhani.jpg"}
             alt={listing.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           {/* Subtle cinematic gradient for high-contrast badge readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
 
-          {/* Top Row: Zomato FSSAI Veg/Non-Veg Badge, Urgency & Save Heart */}
+          {/* Top Row: Zomato FSSAI Veg/Non-Veg Badge, Live Time & Save Heart */}
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-auto">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {/* Official Indian FSSAI Veg Symbol (Green Dot inside Green Square) */}
               {listing.dietary_type === "veg" && (
                 <div 
@@ -97,6 +112,12 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
                   <div className="w-2.5 h-2.5 rounded-full bg-[#b91c1c]" />
                 </div>
               )}
+
+              {/* Live Relative Upload Time Badge */}
+              <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-emerald-300 font-extrabold text-[10px] tracking-wide flex items-center gap-1 shadow-sm border border-emerald-500/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>{getLiveUploadTime(listing.created_at)}</span>
+              </span>
 
               {/* Zomato-Style Express Urgency Tag */}
               {isHighUrgency && (

@@ -6,6 +6,7 @@ import jwt
 from fastapi import Depends, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.core.config import settings
 from app.core.exceptions import UnauthorizedException, ForbiddenException
@@ -80,7 +81,9 @@ async def get_current_user(
     from app.models.models import Profile
     
     user_id = claims.get("sub") or claims.get("user_id")
-    result = await db.execute(select(Profile).where(Profile.id == user_id))
+    result = await db.execute(
+        select(Profile).options(selectinload(Profile.organization)).where(Profile.id == user_id)
+    )
     user = result.scalars().first()
     
     if not user:

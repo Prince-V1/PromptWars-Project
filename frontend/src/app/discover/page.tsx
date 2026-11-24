@@ -24,7 +24,7 @@ export default function DiscoverPage() {
   const [maxDistance, setMaxDistance] = useState<number>(30);
   const [statusFilter, setStatusFilter] = useState<string>("available");
   const [urgentOnly, setUrgentOnly] = useState<boolean>(false);
-  const [sortBy, setSortBy] = useState<string>("priority");
+  const [sortBy, setSortBy] = useState<string>("latest");
 
   // View state: grid or map
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
@@ -45,6 +45,7 @@ export default function DiscoverPage() {
         dietary_type: dietary || undefined,
         status: statusFilter || undefined,
         search: search.trim() || undefined,
+        sort_by: sortBy || undefined,
         // Dynamic coordinates from selected location hub or GPS
         latitude: currentLocation?.latitude ?? 28.6328,
         longitude: currentLocation?.longitude ?? 77.2197,
@@ -56,7 +57,7 @@ export default function DiscoverPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [category, dietary, statusFilter, maxDistance, search, currentLocation?.latitude, currentLocation?.longitude]);
+  }, [category, dietary, statusFilter, maxDistance, search, sortBy, currentLocation?.latitude, currentLocation?.longitude]);
 
   useEffect(() => {
     fetchListings();
@@ -74,9 +75,11 @@ export default function DiscoverPage() {
       result.sort((a, b) => (a.distance_km || 999) - (b.distance_km || 999));
     } else if (sortBy === "quantity") {
       result.sort((a, b) => b.remaining_quantity - a.remaining_quantity);
-    } else {
-      // Default: priority / urgency
+    } else if (sortBy === "priority") {
       result.sort((a, b) => b.priority_score - a.priority_score);
+    } else {
+      // Default: "latest" - recently uploaded on top!
+      result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
 
     return result;

@@ -169,6 +169,7 @@ export function FoodFilters({
                 onChange={(e) => onSortChange(e.target.value)}
                 className="bg-freshBg border border-freshBorder rounded-xl px-3 py-1 text-xs text-freshText-primary focus:outline-none focus:ring-1 focus:ring-lime-400 font-semibold"
               >
+                <option value="latest">Recently Uploaded (Latest)</option>
                 <option value="priority">Urgency (Expiring Soon)</option>
                 <option value="distance">Nearest Distance</option>
                 <option value="quantity">Largest Batch</option>

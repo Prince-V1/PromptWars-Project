@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FoodListing } from "@/types";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +21,7 @@ export function RequestModal({
   onClose,
   onSuccess,
 }: RequestModalProps) {
+  const router = useRouter();
   const [quantity, setQuantity] = useState<number>(0);
   const [deliveryMode, setDeliveryMode] = useState<"self_pickup" | "volunteer_courier" | "provider_delivery">("self_pickup");
   const [notes, setNotes] = useState<string>("");
@@ -44,14 +46,23 @@ export function RequestModal({
 
     setIsSubmitting(true);
     try {
-      await api.createRequest({
+      const res = await api.createRequest({
         listing_id: listing.id,
         requested_quantity: quantity,
         delivery_mode: deliveryMode,
         notes: notes.trim() || undefined,
       });
+
+      // Save to recent orders list for quick tracking
+      try {
+        const saved = JSON.parse(localStorage.getItem("foodloop_recent_orders") || "[]");
+        const updated = [res.id, ...saved.filter((x: string) => x !== res.id)].slice(0, 10);
+        localStorage.setItem("foodloop_recent_orders", JSON.stringify(updated));
+      } catch {}
+
       onSuccess();
       onClose();
+      router.push(`/orders/${res.id}`);
     } catch (err: any) {
       setErrorMsg(err.message || "Failed to submit request.");
     } finally {
@@ -70,7 +81,7 @@ export function RequestModal({
         {/* Listing preview banner */}
         <div className="flex items-center gap-3.5 p-3.5 bg-freshBg rounded-2xl border border-freshBorder">
           <img
-            src={listing.image_url || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80"}
+            src={listing.image_url || "/images/food/dal_makhani.jpg"}
             alt={listing.title}
             className="w-14 h-14 rounded-xl object-cover shrink-0"
           />

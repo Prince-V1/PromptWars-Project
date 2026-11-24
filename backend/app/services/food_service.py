@@ -140,8 +140,13 @@ class FoodService:
         if conditions:
             stmt = stmt.where(and_(*conditions))
 
-        # Sort by urgency priority score and pickup deadline
-        stmt = stmt.order_by(desc(FoodListing.priority_score), FoodListing.pickup_deadline.asc())
+        # Sort order: support latest (newest first) or default urgency
+        if params.sort_by == "latest":
+            stmt = stmt.order_by(desc(FoodListing.created_at))
+        elif params.sort_by == "quantity":
+            stmt = stmt.order_by(desc(FoodListing.remaining_quantity))
+        else:
+            stmt = stmt.order_by(desc(FoodListing.priority_score), FoodListing.pickup_deadline.asc())
 
         result = await db.execute(stmt)
         listings = result.scalars().all()

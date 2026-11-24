@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   Menu, X, PlusCircle, Compass, 
   BarChart3, ShieldCheck, ChevronDown, LogOut,
-  MapPin, Store, CalendarCheck, Sparkles
+  MapPin, Store, CalendarCheck, Sparkles, Truck, User
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "@/hooks/useLocation";
@@ -126,6 +126,17 @@ export function Navbar() {
               Donor Directory
             </Link>
             <Link
+              href="/orders"
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
+                pathname.startsWith("/orders")
+                  ? "bg-freshBg text-freshText-primary font-bold"
+                  : "text-freshText-secondary hover:text-freshText-primary"
+              }`}
+            >
+              <Truck className="w-3.5 h-3.5 text-emerald-600" />
+              Track Orders
+            </Link>
+            <Link
               href="/impact"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname === "/impact"
@@ -189,36 +200,33 @@ export function Navbar() {
               )}
             </div>
 
-            {user ? (
-              <div className="flex items-center gap-2">
-                {user.role === "food_provider" && (
-                  <Link href="/donate">
-                    <Button variant="primary" size="sm" leftIcon={<PlusCircle className="w-3.5 h-3.5" />}>
-                      Donate Food
-                    </Button>
-                  </Link>
-                )}
-                <button
-                  onClick={logout}
-                  className="p-2 rounded-full border border-freshBorder bg-white hover:bg-red-50 text-freshText-secondary hover:text-freshError transition-colors"
-                  title="Sign Out"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-xs">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button variant="primary" size="sm" className="text-xs">
-                    Join FoodLoop
-                  </Button>
-                </Link>
-              </div>
+            {/* Profile Button */}
+            <Link href="/profile">
+              <button
+                className={`p-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg transition-colors text-freshText-primary ${
+                  pathname === "/profile" ? "ring-2 ring-lime-500 bg-lime/10" : ""
+                }`}
+                title="Edit User & Organization Profile"
+              >
+                <User className="w-4 h-4 text-freshText-primary" />
+              </button>
+            </Link>
+
+            {/* Primary Donate CTA */}
+            <Link href="/donate">
+              <Button variant="primary" size="sm" leftIcon={<PlusCircle className="w-3.5 h-3.5" />}>
+                Donate Food
+              </Button>
+            </Link>
+
+            {user && (
+              <button
+                onClick={logout}
+                className="p-2 rounded-full border border-freshBorder bg-white hover:bg-red-50 text-freshText-secondary hover:text-freshError transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             )}
           </div>
 
@@ -273,6 +281,30 @@ export function Navbar() {
             >
               <Store className="w-4 h-4 text-amber-600" />
               Donor Shops & Restaurants
+            </Link>
+            <Link
+              href="/orders"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+            >
+              <Truck className="w-4 h-4 text-emerald-600" />
+              Track Orders
+            </Link>
+            <Link
+              href="/profile"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+            >
+              <User className="w-4 h-4 text-freshText-primary" />
+              Edit Profile
+            </Link>
+            <Link
+              href="/donate"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-bold rounded-xl bg-lime text-freshText-primary flex items-center gap-2"
+            >
+              <PlusCircle className="w-4 h-4 text-freshText-primary" />
+              Donate Food Batch
             </Link>
             <Link
               href="/impact"

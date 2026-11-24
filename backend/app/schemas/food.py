@@ -106,5 +106,6 @@ class FoodFilterParams(BaseModel):
     max_distance_km: Optional[float] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    sort_by: Optional[str] = None
     page: int = Field(default=1, ge=1)
     limit: int = Field(default=20, ge=1, le=100)

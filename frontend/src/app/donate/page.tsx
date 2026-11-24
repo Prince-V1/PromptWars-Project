@@ -191,7 +191,7 @@ export default function DonatePage() {
         longitude: Number(data.longitude),
         storage_instructions: data.storage_instructions,
         allergens: allergensArray,
-        image_url: imagePreview || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80",
+        image_url: imagePreview || (targetBeneficiary === "animal_feed" ? "/images/food/chappati_mash_feed.jpg" : "/images/food/dal_makhani.jpg"),
         ai_analysis_metadata: aiAnalysisNotes || {},
         target_beneficiary: targetBeneficiary,
         suitable_species: targetBeneficiary === "animal_feed" ? selectedAnimalSpecies : [],
@@ -215,15 +215,22 @@ export default function DonatePage() {
           <CheckCircle2 className="w-8 h-8" />
         </div>
         <h2 className="text-2xl font-bold text-freshText-primary mb-2">Donation Listed Successfully!</h2>
-        <p className="text-sm text-freshText-secondary mb-8">
-          Nearby verified NGOs and community kitchens have been alerted for rapid collection.
+        <p className="text-sm text-freshText-secondary mb-6">
+          Your batch is now active on the live rescue grid. Nearby verified NGOs, animal shelters, and volunteers have been notified.
         </p>
-        <div className="flex justify-center gap-3">
-          <Button variant="primary" size="md" onClick={() => router.push(`/discover/${successId}`)}>
-            View Listing
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 font-semibold mb-6 flex items-center justify-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Your listing now appears at the very top of Explore Food!</span>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button variant="primary" size="md" onClick={() => router.push("/discover")}>
+            View on Explore (#1 on Top)
           </Button>
-          <Button variant="outline" size="md" onClick={() => router.push("/provider")}>
-            Provider Dashboard
+          <Button variant="outline" size="md" onClick={() => router.push(`/discover/${successId}`)}>
+            Inspect Listing
+          </Button>
+          <Button variant="ghost" size="md" onClick={() => setSuccessId(null)}>
+            List Another Batch
           </Button>
         </div>
       </div>
