@@ -295,7 +295,7 @@ export default function RecipientsDirectoryPage() {
                     <div className="absolute top-3 left-3 flex items-center gap-1.5">
                       <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs ${
                         isAnimal
-                          ? "bg-amber-600 text-white"
+                          ? "bg-indigo-600 text-white"
                           : "bg-emerald-600 text-white"
                       }`}>
                         {org.organization_type.replace(/_/g, " ")}

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { 
   Package, Clock, MapPin, CheckCircle2, ArrowRight, 
-  RefreshCw, AlertCircle, Sparkles, Filter
+  RefreshCw, AlertCircle, Sparkles, Filter, FileText
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { DonationRequest } from "@/types";
@@ -198,17 +198,29 @@ export default function MyOrdersPage() {
                   </div>
                 </div>
 
-                <div className="pt-4 mt-3 border-t border-freshBorder flex items-center justify-between">
+                <div className="pt-4 mt-3 border-t border-freshBorder flex flex-wrap items-center justify-between gap-2">
                   <span className="text-[11px] text-freshText-secondary font-medium">
                     {new Date(ord.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} at{" "}
                     {new Date(ord.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </span>
 
-                  <Link href={`/orders/${ord.id}`}>
-                    <Button variant="primary" size="sm" className="text-xs font-bold rounded-2xl" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>
-                      Track Order Live
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/orders/${ord.id}/receipt`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs font-semibold rounded-2xl border-slate-300 text-slate-700 hover:bg-slate-50"
+                        leftIcon={<FileText className="w-3.5 h-3.5 text-slate-600" />}
+                      >
+                        Receipt
+                      </Button>
+                    </Link>
+                    <Link href={`/orders/${ord.id}`}>
+                      <Button variant="primary" size="sm" className="text-xs font-bold rounded-2xl" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>
+                        Track Live
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </Card>
             );

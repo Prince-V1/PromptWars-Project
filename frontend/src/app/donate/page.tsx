@@ -335,7 +335,7 @@ export default function DonatePage() {
               onClick={() => setTargetBeneficiary("animal_feed")}
               className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3 ${
                 targetBeneficiary === "animal_feed"
-                  ? "bg-amber-50 border-amber-500 shadow-sm"
+                  ? "bg-indigo-50 border-indigo-500 shadow-sm ring-1 ring-indigo-500"
                   : "bg-white border-freshBorder hover:bg-gray-50"
               }`}
             >
@@ -351,9 +351,9 @@ export default function DonatePage() {
 
           {/* Animal Feed Specific Options */}
           {targetBeneficiary === "animal_feed" && (
-            <div className="mt-5 p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-4 animate-fade-in">
+            <div className="mt-5 p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-4 animate-fade-in">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-amber-950 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-indigo-950 mb-1">
                   Suitable Animal Species (Select all that apply) *
                 </label>
                 <div className="flex flex-wrap gap-2 pt-1">
@@ -377,8 +377,8 @@ export default function DonatePage() {
                         }}
                         className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                           isSelected
-                            ? "bg-amber-600 text-white shadow-xs"
-                            : "bg-white border border-freshBorder text-freshText-secondary hover:border-amber-400"
+                            ? "bg-indigo-600 text-white shadow-xs"
+                            : "bg-white border border-indigo-200 text-indigo-900 hover:border-indigo-400"
                         }`}
                       >
                         <span>{sp.icon}</span>
@@ -391,12 +391,12 @@ export default function DonatePage() {
               </div>
 
               {/* Feed Safety Checklist & Attestation */}
-              <div className="p-3 bg-white rounded-xl border border-amber-200 text-xs space-y-2">
-                <p className="font-bold text-amber-950 flex items-center gap-1.5">
-                  <ShieldAlert className="w-4 h-4 text-amber-600" />
+              <div className="p-3 bg-white rounded-xl border border-indigo-200 text-xs space-y-2">
+                <p className="font-bold text-indigo-950 flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-indigo-600" />
                   <span>Mandatory Animal Feed Safety Attestation</span>
                 </p>
-                <ul className="text-[11px] text-amber-900 space-y-1 list-disc pl-4">
+                <ul className="text-[11px] text-indigo-900 space-y-1 list-disc pl-4">
                   <li>Feed is 100% free of plastics, packaging tape, toothpicks, or metal ties.</li>
                   <li>Ruminant Feed (Cattle/Goats): strictly raw/boiled vegetarian greens & grains (NO meat, poultry, or toxic alliums).</li>
                   <li>Canine Feed (Dogs): strictly NO chocolate, onions, garlic, grapes/raisins, or cooked chicken bones.</li>
@@ -406,9 +406,9 @@ export default function DonatePage() {
                     type="checkbox"
                     checked={feedSafetyConfirmed}
                     onChange={(e) => setFeedSafetyConfirmed(e.target.checked)}
-                    className="w-4 h-4 text-amber-600 rounded"
+                    className="w-4 h-4 text-indigo-600 rounded"
                   />
-                  <span className="font-semibold text-amber-950 text-[11px]">
+                  <span className="font-semibold text-indigo-950 text-[11px]">
                     I confirm this feed has been physically verified as clean and species-safe.
                   </span>
                 </label>

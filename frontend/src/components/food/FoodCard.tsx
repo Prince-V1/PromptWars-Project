@@ -60,6 +60,25 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
   const remainingTimeStr = getRemainingTime(listing.pickup_deadline);
   const isHighUrgency = listing.priority_score >= 65;
 
+  const getCategoryBadge = (category: string) => {
+    switch (category) {
+      case "cooked_meals":
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-900 border border-amber-300">🥘 Cooked Meals</span>;
+      case "bakery":
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-yellow-100 text-yellow-900 border border-yellow-300">🥖 Bakery</span>;
+      case "packaged_groceries":
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-teal-100 text-teal-900 border border-teal-300">📦 Groceries</span>;
+      case "fresh_produce":
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-900 border border-emerald-300">🥗 Produce</span>;
+      case "dairy":
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-sky-100 text-sky-900 border border-sky-300">🥛 Dairy</span>;
+      case "animal_feed":
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-900 border border-indigo-300">🐾 Animal Feed</span>;
+      default:
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-800 border border-slate-300">{category.replace("_", " ")}</span>;
+    }
+  };
+
   // Meal estimation helper (UNEP / FSSAI 400g meal portion)
   const estimatedMeals = Math.round(
     listing.unit === "kg"
@@ -213,16 +232,14 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
 
           {/* Row 2: Zomato Cuisines / Category Tagline */}
           <div className="flex flex-wrap items-center gap-1.5 text-xs text-freshText-secondary">
-            <span className="capitalize font-bold text-freshText-primary">
-              {listing.category.replace("_", " ")}
-            </span>
+            {getCategoryBadge(listing.category)}
             <span className="text-freshBorder">•</span>
-            <span>Verified Fresh Surplus</span>
+            <span className="font-semibold text-emerald-800">FSSAI Inspected</span>
             {listing.allergens && listing.allergens.length > 0 && (
               <>
                 <span className="text-freshBorder">•</span>
-                <span className="text-amber-700 font-medium">
-                  {listing.allergens.slice(0, 2).join(", ")}
+                <span className="text-amber-800 font-semibold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 text-[10px]">
+                  Allergens: {listing.allergens.slice(0, 2).join(", ")}
                 </span>
               </>
             )}
@@ -286,7 +303,7 @@ export function FoodCard({ listing, onRequest }: FoodCardProps) {
               className={`flex-1 text-xs font-black shadow-md rounded-2xl text-white ${
                 listing.target_beneficiary === "animal_feed"
                   ? "bg-indigo-600 hover:bg-indigo-700"
-                  : "bg-primary-600 hover:bg-primary-700"
+                  : "bg-emerald-600 hover:bg-emerald-700"
               }`}
               rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
             >

@@ -2,7 +2,7 @@ import React from "react";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "lime" | "sage" | "success" | "warning" | "error" | "neutral";
+  variant?: "lime" | "sage" | "success" | "warning" | "error" | "neutral" | "indigo" | "rose" | "amber" | "teal" | "blue" | "primary";
   size?: "sm" | "md";
   className?: string;
   icon?: React.ReactNode;
@@ -18,10 +18,16 @@ export function Badge({
   const variantStyles = {
     lime: "bg-lime/20 text-[#55690b] border border-lime/30 font-medium",
     sage: "bg-sage-100 text-freshText-secondary border border-sage-200",
-    success: "bg-[#258A54]/10 text-freshSuccess border border-freshSuccess/20 font-medium",
-    warning: "bg-[#D69A30]/10 text-freshWarning border border-freshWarning/20 font-medium",
-    error: "bg-[#D94B45]/10 text-freshError border border-freshError/20 font-medium",
+    success: "bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold",
+    warning: "bg-amber-50 text-amber-700 border border-amber-200 font-semibold",
+    error: "bg-red-50 text-red-700 border border-red-200 font-semibold",
     neutral: "bg-white text-freshText-secondary border border-freshBorder",
+    indigo: "bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold",
+    rose: "bg-rose-50 text-rose-700 border border-rose-200 font-bold",
+    amber: "bg-amber-50 text-amber-800 border border-amber-200 font-bold",
+    teal: "bg-teal-50 text-teal-800 border border-teal-200 font-bold",
+    blue: "bg-blue-50 text-blue-700 border border-blue-200 font-bold",
+    primary: "bg-emerald-600 text-white font-bold shadow-xs",
   };
 
   const sizeStyles = {

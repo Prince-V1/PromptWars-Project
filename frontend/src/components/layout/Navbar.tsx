@@ -84,80 +84,81 @@ export function Navbar() {
               href="/discover"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname === "/discover"
-                  ? "bg-freshBg text-freshText-primary font-bold"
-                  : "text-freshText-secondary hover:text-freshText-primary"
+                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-emerald-700"
               }`}
             >
-              <Compass className="w-3.5 h-3.5 text-lime-600" />
-              Explore Food
+              <Compass className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Explore Food</span>
             </Link>
             <Link
               href="/events"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname.startsWith("/events")
-                  ? "bg-red-50 text-red-600 font-bold border border-red-200"
-                  : "text-freshText-secondary hover:text-red-600"
+                  ? "bg-rose-50 text-rose-700 border border-rose-200 font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-rose-600"
               }`}
             >
-              <CalendarCheck className="w-3.5 h-3.5 text-red-600" />
+              <CalendarCheck className="w-3.5 h-3.5 text-rose-600" />
               <span>Event Rescue</span>
-              <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-red-600 text-white">Weddings</span>
+              <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-rose-600 text-white">Weddings</span>
             </Link>
             <Link
               href="/recipients"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname.startsWith("/recipients")
-                  ? "bg-amber-50 text-amber-900 font-bold border border-amber-200"
-                  : "text-freshText-secondary hover:text-amber-800"
+                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-indigo-600"
               }`}
             >
               <span>🐾</span>
-              <span>Animal Care & NGOs</span>
+              <span>Animal Care & Feed</span>
+              <span className="text-[9px] uppercase font-black px-1.5 py-0.2 rounded-full bg-indigo-600 text-white">Gaushalas</span>
             </Link>
             <Link
               href="/donors"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname === "/donors"
-                  ? "bg-freshBg text-freshText-primary font-bold"
-                  : "text-freshText-secondary hover:text-freshText-primary"
+                  ? "bg-amber-50 text-amber-800 border border-amber-200 font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-amber-700"
               }`}
             >
               <Store className="w-3.5 h-3.5 text-amber-600" />
-              Donor Directory
+              <span>Donor Directory</span>
             </Link>
             <Link
               href="/orders"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname.startsWith("/orders")
-                  ? "bg-freshBg text-freshText-primary font-bold"
-                  : "text-freshText-secondary hover:text-freshText-primary"
+                  ? "bg-teal-50 text-teal-800 border border-teal-200 font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-teal-700"
               }`}
             >
-              <Truck className="w-3.5 h-3.5 text-emerald-600" />
-              Track Orders
+              <Truck className="w-3.5 h-3.5 text-teal-600" />
+              <span>Track Orders</span>
             </Link>
             <Link
               href="/impact"
               className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                 pathname === "/impact"
-                  ? "bg-freshBg text-freshText-primary font-bold"
-                  : "text-freshText-secondary hover:text-freshText-primary"
+                  ? "bg-green-50 text-green-800 border border-green-200 font-bold shadow-xs"
+                  : "text-freshText-secondary hover:text-green-700"
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5 text-freshSuccess" />
-              Impact Metrics
+              <span>Impact</span>
             </Link>
             {user && (
               <Link
                 href={getDashboardLink()}
                 className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1.5 ${
                   pathname.includes("dashboard") || ["/provider", "/recipient", "/volunteer", "/admin"].includes(pathname)
-                    ? "bg-freshBg text-freshText-primary font-bold"
-                    : "text-freshText-secondary hover:text-freshText-primary"
+                    ? "bg-blue-50 text-blue-800 border border-blue-200 font-bold shadow-xs"
+                    : "text-freshText-secondary hover:text-blue-700"
                 }`}
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-[#3b82f6]" />
-                Dashboard
+                <span>Dashboard</span>
               </Link>
             )}
           </nav>
@@ -168,7 +169,7 @@ export function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg text-freshText-secondary"
+                className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg text-freshText-secondary shadow-xs"
               >
                 <span>Role: <strong className="text-freshText-primary capitalize">{user?.role?.replace("_", " ") || "Guest"}</strong></span>
                 <ChevronDown className="w-3.5 h-3.5 text-freshText-secondary" />
@@ -187,7 +188,7 @@ export function Navbar() {
                         setRoleDropdownOpen(false);
                       }}
                       className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
-                        user?.role === item.role ? "bg-lime/20 text-[#4c5c0a] font-semibold" : "hover:bg-freshBg text-freshText-primary"
+                        user?.role === item.role ? "bg-emerald-50 text-emerald-800 font-bold" : "hover:bg-freshBg text-freshText-primary"
                       }`}
                     >
                       <span>{item.label}</span>
@@ -203,18 +204,23 @@ export function Navbar() {
             {/* Profile Button */}
             <Link href="/profile">
               <button
-                className={`p-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg transition-colors text-freshText-primary ${
-                  pathname === "/profile" ? "ring-2 ring-lime-500 bg-lime/10" : ""
+                className={`p-2 rounded-full border border-freshBorder bg-white hover:bg-freshBg transition-all text-freshText-primary shadow-xs ${
+                  pathname === "/profile" ? "ring-2 ring-emerald-500 bg-emerald-50" : ""
                 }`}
                 title="Edit User & Organization Profile"
               >
-                <User className="w-4 h-4 text-freshText-primary" />
+                <User className="w-4 h-4 text-emerald-800" />
               </button>
             </Link>
 
             {/* Primary Donate CTA */}
             <Link href="/donate">
-              <Button variant="primary" size="sm" leftIcon={<PlusCircle className="w-3.5 h-3.5" />}>
+              <Button 
+                variant="primary" 
+                size="sm" 
+                className="text-xs font-extrabold shadow-md bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-4" 
+                leftIcon={<PlusCircle className="w-3.5 h-3.5" />}
+              >
                 Donate Food
               </Button>
             </Link>
@@ -250,80 +256,118 @@ export function Navbar() {
             <Link
               href="/discover"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                pathname === "/discover"
+                  ? "bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
             >
-              <Compass className="w-4 h-4 text-lime-600" />
-              Explore Food
+              <Compass className="w-4 h-4 text-emerald-600" />
+              <span>Explore Food</span>
             </Link>
             <Link
               href="/events"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl bg-red-50 text-red-600 flex items-center justify-between"
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-between transition-colors ${
+                pathname.startsWith("/events")
+                  ? "bg-rose-50 text-rose-700 font-bold border border-rose-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
             >
-              <div className="flex items-center gap-2">
-                <CalendarCheck className="w-4 h-4 text-red-600" />
+              <div className="flex items-center gap-2.5">
+                <CalendarCheck className="w-4 h-4 text-rose-600" />
                 <span>Event Rescue</span>
               </div>
-              <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-red-600 text-white">Weddings</span>
+              <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-rose-600 text-white">Weddings</span>
             </Link>
             <Link
               href="/recipients"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2 text-amber-900"
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-between transition-colors ${
+                pathname.startsWith("/recipients")
+                  ? "bg-indigo-50 text-indigo-700 font-bold border border-indigo-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
             >
-              <span>🐾</span>
-              <span>Animal Care & Beneficiaries</span>
+              <div className="flex items-center gap-2.5">
+                <span>🐾</span>
+                <span>Animal Care & Feed</span>
+              </div>
+              <span className="text-[9px] uppercase font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white">Gaushalas</span>
             </Link>
             <Link
               href="/donors"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                pathname === "/donors"
+                  ? "bg-amber-50 text-amber-800 font-bold border border-amber-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
             >
               <Store className="w-4 h-4 text-amber-600" />
-              Donor Shops & Restaurants
+              <span>Donor Directory</span>
             </Link>
             <Link
               href="/orders"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                pathname.startsWith("/orders")
+                  ? "bg-teal-50 text-teal-800 font-bold border border-teal-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
             >
-              <Truck className="w-4 h-4 text-emerald-600" />
-              Track Orders
-            </Link>
-            <Link
-              href="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
-            >
-              <User className="w-4 h-4 text-freshText-primary" />
-              Edit Profile
-            </Link>
-            <Link
-              href="/donate"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-bold rounded-xl bg-lime text-freshText-primary flex items-center gap-2"
-            >
-              <PlusCircle className="w-4 h-4 text-freshText-primary" />
-              Donate Food Batch
+              <Truck className="w-4 h-4 text-teal-600" />
+              <span>Track Orders & Receipts</span>
             </Link>
             <Link
               href="/impact"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                pathname === "/impact"
+                  ? "bg-green-50 text-green-800 font-bold border border-green-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
             >
               <BarChart3 className="w-4 h-4 text-freshSuccess" />
-              Impact Metrics
+              <span>Impact Metrics</span>
+            </Link>
+            <Link
+              href="/profile"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                pathname === "/profile"
+                  ? "bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"
+                  : "hover:bg-freshBg text-freshText-secondary"
+              }`}
+            >
+              <User className="w-4 h-4 text-emerald-700" />
+              <span>User & Org Profile</span>
             </Link>
             {user && (
               <Link
                 href={getDashboardLink()}
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 text-xs font-semibold rounded-xl hover:bg-freshBg flex items-center gap-2"
+                className={`px-3 py-2 text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors ${
+                  pathname.includes("dashboard") || ["/provider", "/recipient", "/volunteer", "/admin"].includes(pathname)
+                    ? "bg-blue-50 text-blue-800 font-bold border border-blue-200"
+                    : "hover:bg-freshBg text-freshText-secondary"
+                }`}
               >
                 <ShieldCheck className="w-4 h-4 text-[#3b82f6]" />
-                Dashboard ({user.role})
+                <span>Dashboard ({user.role})</span>
               </Link>
             )}
+
+            <div className="pt-2">
+              <Link
+                href="/donate"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full px-4 py-2.5 text-xs font-extrabold rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm"
+              >
+                <PlusCircle className="w-4 h-4 text-white" />
+                <span>+ Donate Food Batch</span>
+              </Link>
+            </div>
           </div>
 
           {/* Mobile Role Switcher */}

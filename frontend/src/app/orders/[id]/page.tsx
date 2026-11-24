@@ -4,9 +4,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
-  CheckCircle2, Clock, MapPin, Truck, ShieldCheck, 
-  Phone, ArrowLeft, RefreshCw, AlertCircle, HeartHandshake,
-  Check, X, Sparkles, Navigation, UserCheck, ShieldAlert
+  CheckCircle2, MapPin, ArrowLeft, RefreshCw, AlertCircle,
+  Check, X, Sparkles, Navigation, FileText
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { DonationRequest } from "@/types";
@@ -155,17 +154,28 @@ export default function OrderTrackingPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link href={`/orders/${order.id}/receipt`}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs font-bold border-emerald-300 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 shadow-xs rounded-2xl"
+              leftIcon={<FileText className="w-3.5 h-3.5 text-emerald-700" />}
+            >
+              Handover Receipt
+            </Button>
+          </Link>
           <Button
             variant="outline"
             size="sm"
             onClick={fetchOrder}
             disabled={isLoading}
+            className="rounded-2xl"
             leftIcon={<RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />}
           >
             Refresh
           </Button>
           <Link href="/orders">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="rounded-2xl">
               My Orders
             </Button>
           </Link>
@@ -372,6 +382,17 @@ export default function OrderTrackingPage() {
                   Confirm Safe Handover
                 </Button>
 
+                <Link href={`/orders/${order.id}/receipt`} className="block w-full">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs font-bold border-slate-300 text-slate-800 hover:bg-slate-50 rounded-2xl"
+                    leftIcon={<FileText className="w-3.5 h-3.5 text-slate-600" />}
+                  >
+                    View Handover Manifest
+                  </Button>
+                </Link>
+
                 <Button
                   variant="outline"
                   size="sm"
@@ -384,16 +405,30 @@ export default function OrderTrackingPage() {
                 </Button>
               </div>
             ) : (
-              <div className="text-center py-4 space-y-2">
+              <div className="text-center py-4 space-y-3">
                 <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
                   <Check className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-freshText-primary">Order Finalized</h4>
-                <p className="text-xs text-freshText-secondary">
-                  {isDelivered ? "Thank you for completing this safe redistribution!" : "This order has been archived."}
-                </p>
-                <Link href="/discover">
-                  <Button variant="outline" size="sm" className="mt-2 w-full text-xs">
+                <div>
+                  <h4 className="text-sm font-bold text-freshText-primary">Order Finalized</h4>
+                  <p className="text-xs text-freshText-secondary">
+                    {isDelivered ? "Thank you for completing this safe redistribution!" : "This order has been archived."}
+                  </p>
+                </div>
+
+                <Link href={`/orders/${order.id}/receipt`} className="block w-full">
+                  <Button
+                    variant="emerald"
+                    size="sm"
+                    className="w-full text-xs font-bold rounded-2xl shadow-xs"
+                    leftIcon={<FileText className="w-3.5 h-3.5 text-white" />}
+                  >
+                    View & Print Official Receipt
+                  </Button>
+                </Link>
+
+                <Link href="/discover" className="block w-full">
+                  <Button variant="outline" size="sm" className="w-full text-xs rounded-2xl">
                     Find More Surplus Food
                   </Button>
                 </Link>

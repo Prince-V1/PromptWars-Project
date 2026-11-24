@@ -21,13 +21,48 @@ interface FoodFiltersProps {
 }
 
 const categories = [
-  { label: "All Items", value: "" },
-  { label: "🥘 Cooked Meals", value: "cooked_meals" },
-  { label: "🥖 Bakery & Breads", value: "bakery" },
-  { label: "📦 Packaged Groceries", value: "packaged_groceries" },
-  { label: "🥗 Fresh Produce", value: "fresh_produce" },
-  { label: "🥛 Dairy", value: "dairy" },
-  { label: "🐾 Animal Feed", value: "animal_feed" },
+  { 
+    label: "All Items", 
+    value: "",
+    activeClass: "bg-slate-900 text-white border-slate-900 shadow-sm font-bold",
+    inactiveClass: "bg-white text-slate-700 hover:text-slate-950 hover:bg-slate-100 border-slate-200"
+  },
+  { 
+    label: "🥘 Cooked Meals", 
+    value: "cooked_meals",
+    activeClass: "bg-amber-600 text-white border-amber-600 shadow-sm font-bold",
+    inactiveClass: "bg-white text-amber-900/80 hover:text-amber-950 hover:bg-amber-50 hover:border-amber-300 border-slate-200"
+  },
+  { 
+    label: "🥖 Bakery & Breads", 
+    value: "bakery",
+    activeClass: "bg-yellow-600 text-white border-yellow-600 shadow-sm font-bold",
+    inactiveClass: "bg-white text-yellow-900/80 hover:text-yellow-950 hover:bg-yellow-50 hover:border-yellow-300 border-slate-200"
+  },
+  { 
+    label: "📦 Packaged Groceries", 
+    value: "packaged_groceries",
+    activeClass: "bg-teal-600 text-white border-teal-600 shadow-sm font-bold",
+    inactiveClass: "bg-white text-teal-900/80 hover:text-teal-950 hover:bg-teal-50 hover:border-teal-300 border-slate-200"
+  },
+  { 
+    label: "🥗 Fresh Produce", 
+    value: "fresh_produce",
+    activeClass: "bg-emerald-600 text-white border-emerald-600 shadow-sm font-bold",
+    inactiveClass: "bg-white text-emerald-900/80 hover:text-emerald-950 hover:bg-emerald-50 hover:border-emerald-300 border-slate-200"
+  },
+  { 
+    label: "🥛 Dairy", 
+    value: "dairy",
+    activeClass: "bg-sky-600 text-white border-sky-600 shadow-sm font-bold",
+    inactiveClass: "bg-white text-sky-900/80 hover:text-sky-950 hover:bg-sky-50 hover:border-sky-300 border-slate-200"
+  },
+  { 
+    label: "🐾 Animal Feed", 
+    value: "animal_feed",
+    activeClass: "bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold",
+    inactiveClass: "bg-white text-indigo-900/80 hover:text-indigo-950 hover:bg-indigo-50 hover:border-indigo-300 border-slate-200"
+  },
 ];
 
 export function FoodFilters({
@@ -119,19 +154,20 @@ export function FoodFilters({
         )}
 
         {/* Category Pills */}
-        {categories.map((cat) => (
-          <button
-            key={cat.value}
-            onClick={() => onCategoryChange(cat.value)}
-            className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all border shrink-0 ${
-              selectedCategory === cat.value
-                ? "bg-lime text-freshText-primary border-lime-400 shadow-sm font-extrabold"
-                : "bg-white text-freshText-secondary hover:text-freshText-primary hover:bg-freshBg border-freshBorder"
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const isSelected = selectedCategory === cat.value;
+          return (
+            <button
+              key={cat.value}
+              onClick={() => onCategoryChange(cat.value)}
+              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border shrink-0 ${
+                isSelected ? cat.activeClass : cat.inactiveClass
+              }`}
+            >
+              {cat.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* ======================================================== */}

@@ -7,6 +7,7 @@ export type FoodCategory =
   | "fresh_produce" 
   | "dairy" 
   | "beverages" 
+  | "animal_feed"
   | "other";
 
 export type FoodUnit = "kg" | "portions" | "packets" | "crates" | "liters" | "boxes";

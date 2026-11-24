@@ -100,8 +100,18 @@ export default function ListingDetailPage() {
               className="w-full h-full object-cover"
             />
             <div className="absolute top-4 left-4 flex gap-2">
-              <Badge variant="lime" size="md">
-                {listing.category.replace("_", " ")}
+              <Badge 
+                variant={
+                  listing.category === "cooked_meals" ? "amber" :
+                  listing.category === "bakery" ? "amber" :
+                  listing.category === "packaged_groceries" ? "teal" :
+                  listing.category === "fresh_produce" ? "success" :
+                  listing.category === "dairy" ? "blue" :
+                  listing.category === "animal_feed" ? "indigo" : "neutral"
+                } 
+                size="md"
+              >
+                {listing.category.replace("_", " ").toUpperCase()}
               </Badge>
               <Badge variant={listing.dietary_type === "veg" ? "success" : "neutral"} size="md">
                 {listing.dietary_type.toUpperCase()}
@@ -271,12 +281,12 @@ export default function ListingDetailPage() {
 
             {listing.status === "available" ? (
               <Button
-                variant="primary"
+                variant={listing.target_beneficiary === "animal_feed" ? "indigo" : "emerald"}
                 size="lg"
-                className="w-full font-bold shadow-floating"
+                className="w-full font-black shadow-floating"
                 onClick={() => setIsRequestModalOpen(true)}
               >
-                Request This Food
+                {listing.target_beneficiary === "animal_feed" ? "🐾 Claim Animal Feed Batch" : "🍲 Request This Food"}
               </Button>
             ) : (
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-center text-xs font-semibold text-freshWarning">
