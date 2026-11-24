@@ -1,5 +1,6 @@
-# FoodLoop — AI VIBEATHON
+# FoodLoop — PromptWars Project
 ## Intelligent Real-Time Food Rescue & Surplus Redistribution Ecosystem
+> **Live Production Deployment:** [https://foodloop-vert.vercel.app](https://foodloop-vert.vercel.app)  
 > **Tagline:** Save Food • Share Food • Feed Better  
 > **Market Focus:** Pan-India (Delhi NCR Pilot Hubs) • **Currency:** INR (₹) • **Standards:** FSSAI & AWBI Compliant
 
